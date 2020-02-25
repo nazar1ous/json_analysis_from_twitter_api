@@ -36,25 +36,31 @@ def get_dict_from_json(json_file_path: str) -> dict:
     return data
 
 
-def analyze_dict(sub_elem: object):
+def analyze_dict(sub_elem: object, temp=[]):
     """
     Analyzes the dict
     :param sub_elem: subdict or a sublist in which we are searching for a value
     :return: bool
     """
+    temp.append(sub_elem)
     if isinstance(sub_elem, list):
         print("There are available indexes in range of {}"
               .format(len(sub_elem)))
     elif isinstance(sub_elem, dict):
-        print("There are available keys of dict: {}"
-              .format(', '.join([el for el in sub_elem])))
+        print("There are available keys of dict:\n{}"
+              .format('\n'.join([el for el in sub_elem])))
     else:
         print(sub_elem)
         return True
     key = input("Enter the key/index to search: ")
     if key == 'ESCAPE':
-        print(sub_elem)
         return True
+    if key == 'BACK':
+        analyze_dict(temp[-2])
+        return True
+    if key == 'SHOW':
+        print(sub_elem)
+        analyze_dict(temp[-1])
     if key.isdigit():
         analyze_dict(sub_elem[int(key)])
     else:
@@ -77,7 +83,12 @@ def main(path: str):
             key = input("Enter the key value: ")
             print(get_key_values(dct_from_json, key))
         if var == '2':
-            print("In order to print the current object, please type 'ESCAPE'")
+            commands_text = "LIST of commands:\n" +\
+                            "1) to print the current object," \
+                            " please type 'SHOW'\n" +\
+                            "2) to get back, please type 'BACK'\n" + \
+                            "3) to escape from program, type 'ESCAPE'\n"
+            print(commands_text)
             analyze_dict(dct_from_json)
         else:
             print("There is no more variants of realization, sorry")
