@@ -1,4 +1,3 @@
-import pprint
 import json
 
 
@@ -36,35 +35,38 @@ def get_dict_from_json(json_file_path: str) -> dict:
     return data
 
 
-def analyze_dict(sub_elem: object, temp=[]):
+def analyze_dict(dct: object):
     """
     Analyzes the dict
-    :param sub_elem: subdict or a sublist in which we are searching for a value
-    :return: bool
+    :param dct: dictionary, which we want to analyze
+    :return: True
     """
-    temp.append(sub_elem)
-    if isinstance(sub_elem, list):
-        print("There are available indexes in range of {}"
-              .format(len(sub_elem)))
-    elif isinstance(sub_elem, dict):
-        print("There are available keys of dict:\n{}"
-              .format('\n'.join([el for el in sub_elem])))
-    else:
-        print(sub_elem)
-        return True
-    key = input("Enter the key/index to search: ")
-    if key == 'ESCAPE':
-        return True
-    if key == 'BACK':
-        analyze_dict(temp[-2])
-        return True
-    if key == 'SHOW':
-        print(sub_elem)
-        analyze_dict(temp[-1])
-    if key.isdigit():
-        analyze_dict(sub_elem[int(key)])
-    else:
-        analyze_dict(sub_elem[key])
+    temp = [dct]
+    while temp:
+        sub_elem = temp[-1]
+        if isinstance(sub_elem, list):
+            print("There are available indexes in range of {}"
+                  .format(len(sub_elem)))
+        elif isinstance(sub_elem, dict):
+            print("There are available keys of dict:\n{}"
+                  .format('\n'.join([el for el in sub_elem])))
+        else:
+            print(sub_elem)
+        key = input("Enter the command or the key/index value,"
+                    " which u want to look for: ")
+        if key == 'PRINT':
+            print(temp[-1])
+        elif key == 'ESCAPE':
+            print("Hope u enjoyed using this program...")
+            return True
+        elif key == 'BACK':
+            temp.pop()
+            continue
+        elif key.isdigit():
+            temp.append(sub_elem[int(key)])
+        else:
+            temp.append(sub_elem[key])
+    print("Hope u enjoyed this program")
 
 
 def main(path: str):
@@ -82,10 +84,10 @@ def main(path: str):
         if var == '1':
             key = input("Enter the key value: ")
             print(get_key_values(dct_from_json, key))
-        if var == '2':
+        elif var == '2':
             commands_text = "LIST of commands:\n" +\
                             "1) to print the current object," \
-                            " please type 'SHOW'\n" +\
+                            " please type 'PRINT'\n" +\
                             "2) to get back, please type 'BACK'\n" + \
                             "3) to escape from program, type 'ESCAPE'\n"
             print(commands_text)
